@@ -2,13 +2,22 @@ import React from "react";
 import { authService } from "./../src/service/auth/authService";
 
 export async function getServerSideProps(ctx) {
-  const session = await authService.getSession(ctx);
-  return {
-    props: {
-      // token,
-      session,
-    },
-  };
+  try {
+    const session = await authService.getSession(ctx);
+    return {
+      props: {
+        // token,
+        session,
+      },
+    };
+  } catch (error) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/?error=401",
+      },
+    };
+  }
 }
 
 function AuthPageSrr(props) {
