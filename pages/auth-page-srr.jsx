@@ -1,24 +1,5 @@
 import React from "react";
-import { authService } from "./../src/service/auth/authService";
-
-export async function getServerSideProps(ctx) {
-  try {
-    const session = await authService.getSession(ctx);
-    return {
-      props: {
-        // token,
-        session,
-      },
-    };
-  } catch (error) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/?error=401",
-      },
-    };
-  }
-}
+import { withSession } from "../src/service/auth/session";
 
 function AuthPageSrr(props) {
   return (
@@ -30,3 +11,30 @@ function AuthPageSrr(props) {
 }
 
 export default AuthPageSrr;
+
+// Implements Decorator Pattern
+
+export const getServerSideProps = withSession((ctx) => {
+  return {
+    props: {
+      session: ctx.req.session,
+    },
+  };
+});
+
+// export async function getServerSideProps(ctx) {
+//   try {
+//     const session = await authService.getSession(ctx);
+//     return {
+//       props: {
+//         session,
+//       },
+//     };
+//   } catch (error) {
+//     return {
+//       redirect: {
+//         permanent: false,
+//         destination: "/?error=401",
+//       },
+//     };
+//   }
