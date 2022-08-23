@@ -1,15 +1,12 @@
 import React from "react";
-import { tokenService } from "./../src/service/auth/tokenService";
-import nookies from "nookies";
+import { authService } from "./../src/service/auth/authService";
 
 export async function getServerSideProps(ctx) {
-  console.log(tokenService.get());
-  const cookies = nookies.get(ctx);
-  console.log(cookies);
-
+  const session = await authService.getSession(ctx);
   return {
     props: {
-      tokenService: tokenService.get(ctx),
+      // token,
+      session,
     },
   };
 }
