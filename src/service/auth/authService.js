@@ -14,9 +14,17 @@ export const authService = {
         tokenService.save(body.data.access_token);
         return body;
       })
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         const { refresh_token } = data;
         console.log("Refresh Token: " + refresh_token);
+
+        const response = await HttpClient("/api/refresh", {
+          method: "POST",
+          body: {
+            refresh_token,
+          },
+        });
+        console.log(response);
       });
   },
   async getSession(ctx = null) {
