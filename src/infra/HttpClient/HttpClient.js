@@ -33,7 +33,15 @@ export async function HttpClient(fetchUrl, fetchOptions) {
       const newAccessToken = refreshResponse.body.data.access_token;
       const newRefreshToken = refreshResponse.body.data.refresh_token;
 
-      console.log();
+      // [Tentar rodar o request anterior]
+      const retryResponse = await HttpClient(fetchUrl, {
+        ...options,
+        refresh: false,
+        headers: {
+          Authorization: `Bearer ${newAccessToken}`,
+        },
+      });
+
       return response;
     });
 }
