@@ -1,4 +1,5 @@
 // Arquitetura hexagonal
+import { tokenService } from "./../../service/auth/tokenService";
 // Ports and Adapters
 export async function HttpClient(fetchUrl, fetchOptions) {
   const options = {
@@ -33,6 +34,9 @@ export async function HttpClient(fetchUrl, fetchOptions) {
       const newAccessToken = refreshResponse.body.data.access_token;
       const newRefreshToken = refreshResponse.body.data.refresh_token;
 
+      // [Tentar Guardar o token]
+      tokenService.save(newAccessToken);
+
       // [Tentar rodar o request anterior]
       const retryResponse = await HttpClient(fetchUrl, {
         ...options,
@@ -42,6 +46,6 @@ export async function HttpClient(fetchUrl, fetchOptions) {
         },
       });
 
-      return response;
+      return retryResponse;
     });
 }
