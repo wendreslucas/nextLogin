@@ -22,7 +22,7 @@ export const tokenService = {
     const cookies = nookies.get(ctx);
     return cookies[ACCESS_TOKEN] || "";
   },
-  delete() {
+  delete(ctx = null) {
     globalThis?.localStorage?.removeItem(ACCESS_TOKEN);
     globalThis?.sessionStorage?.removeItem(ACCESS_TOKEN);
     nookies.destroy(ctx, ACCESS_TOKEN);
