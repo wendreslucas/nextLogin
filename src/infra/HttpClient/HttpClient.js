@@ -1,6 +1,6 @@
 // Arquitetura hexagonal
 import { tokenService } from "./../../service/auth/tokenService";
-import { nookies } from "nookies";
+import nookies from "nookies";
 // Ports and Adapters
 export async function HttpClient(fetchUrl, fetchOptions) {
   const options = {
@@ -37,11 +37,12 @@ export async function HttpClient(fetchUrl, fetchOptions) {
           body: isServer ? { refresh_token: currentRefreshToken } : undefined,
         }
       );
+
       const newAccessToken = refreshResponse.body.data.access_token;
       const newRefreshToken = refreshResponse.body.data.refresh_token;
 
       if (isServer) {
-        nookies.set(ctx, "REFRESH_TOKEN_NAME", newRefreshToken, {
+        nookies.set(fetchOptions.ctx, "REFRESH_TOKEN_NAME", newRefreshToken, {
           httpOnly: true,
           sameSite: "lax",
           path: "/",
@@ -59,7 +60,7 @@ export async function HttpClient(fetchUrl, fetchOptions) {
           Authorization: `Bearer ${newAccessToken}`,
         },
       });
-
+      console.log("retryResponse", retryResponse);
       return retryResponse;
     });
 }
